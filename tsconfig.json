@@ -44,5 +44,6 @@
       "@/*": ["./src/*"],
       "@env/*": ["./src/env/*"]
     }
-  }
+  },
+  "exclude": ["backend-template-trilha-main", "node_modules", "build"]
 }

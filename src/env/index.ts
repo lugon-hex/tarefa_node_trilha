@@ -12,6 +12,25 @@ const envSchema = z.object({
   HASH_SALT_ROUNDS: z.coerce.number().default(12),
 
   JWT_SECRET: z.string(),
+
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.coerce.number(),
+  SMTP_SECURE: z.preprocess(
+    (val) => val === 'true' || val === true,
+    z.boolean(),
+  ),
+  SMTP_EMAIL: z.string().email(),
+  SMTP_PASSWORD: z.string(),
+
+  APP_NAME: z.string().default(''),
+  APP_PORT: z.coerce.number().int().positive().default(3000),
+  FRONTEND_URL: z.string().url(),
+  SENTRY_DSN: z.string().optional(),
+
+  PROJECT_NAME: z.string(),
+
+  // Command
+  COMMAND: z.string().optional(),
 })
 
 const _env = envSchema.safeParse(process.env)

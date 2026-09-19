@@ -1,4 +1,5 @@
 import type { ProjectsRepository } from '@/repositories/projects-repository.js'
+import type { TasksRepository } from '@/repositories/tasks-repository.js'
 import { ProjectHasTasksError } from '../errors/project-has-tasks-error.js'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
 
@@ -7,7 +8,10 @@ interface DeleteProjectCaseRequest {
 }
 
 export class DeleteProjectUseCase {
-  constructor(private projectsRepository: ProjectsRepository) {}
+  constructor(
+    private projectsRepository: ProjectsRepository,
+    private tasksRepository: TasksRepository,
+  ) {}
 
   async execute({ publicId }: DeleteProjectCaseRequest) {
     const project = await this.projectsRepository.findBy({ publicId })
