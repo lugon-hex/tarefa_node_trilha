@@ -29,6 +29,7 @@ export const messages = {
   },
   email: {
     passwordRecoverySubject: 'Recuperação de senha',
+    dailyHighlightsSubject: 'Destaques das últimas 24 horas',
   },
 }
 

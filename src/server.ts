@@ -1,5 +1,8 @@
 import { app } from './app.js'
 import { env } from './env/index.js'
+import { registerDailyHighlightsJob } from './jobs/daily-highlights.job.js'
+
+registerDailyHighlightsJob()
 
 app
   .listen({

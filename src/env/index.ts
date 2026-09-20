@@ -31,6 +31,9 @@ const envSchema = z.object({
 
   // Command
   COMMAND: z.string().optional(),
+
+  // Cron
+  CRON_SCHEDULE: z.string().default('0 23 * * *'),
 })
 
 const _env = envSchema.safeParse(process.env)

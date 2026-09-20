@@ -4,15 +4,15 @@ export function forgotPasswordTextTemplate(userName: string, token: string) {
   const url = `${env.FRONTEND_URL}/reset-password/${token}`
   const appName = env.APP_NAME
   return `
-Olá, ${userName}!
+    Olá, ${userName}!
 
-Recebemos uma solicitação para redefinir a sua senha. Para continuar, acesse o link abaixo:
+    Recebemos uma solicitação para redefinir a sua senha. Para continuar, acesse o link abaixo:
 
-${url}
+    ${url}
 
-Se você não solicitou a recuperação de senha, ignore este e-mail.
+    Se você não solicitou a recuperação de senha, ignore este e-mail.
 
-Atenciosamente,
-Equipe ${appName}
+    Atenciosamente,
+    Equipe ${appName}
   `.trim()
 }
