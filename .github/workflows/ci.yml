@@ -1,0 +1,84 @@
+name: Lint and Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['main', 'dev']
+  pull_request:
+    branches: ['**']
+
+env:
+  # Variável de ambiente dummy necessária pra executar a geração de tipos do Prisma:
+  DUMMY_DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node: [22.x, 24.x]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+      
+      # Cache da Engine do Prisma (otimização de tempo de pipeline)
+      - name: Cache Prisma Engine
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/prisma
+          key: ${{ runner.os }}-prisma-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-prisma-
+      
+      # Instalando dependências do package-lock.json
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Type Checking
+        run: npx tsc --noEmit
+      
+      # Execução do Linter para organizar o código:
+      - name: Run Linter
+        run: |
+          npm run lint
+          echo "✅ Lint passed" >> $GITHUB_STEP_SUMMARY
+          
+      # Geração explícita do Prisma Client
+      - name: Generate Prisma Client
+        env:
+          DATABASE_URL: ${{ env.DUMMY_DATABASE_URL }}
+        run: |
+          npx prisma generate
+          echo "✅ Prisma Client generated" >> $GITHUB_STEP_SUMMARY
+          
+      - name: Build
+        env:
+          DATABASE_URL: ${{ env.DUMMY_DATABASE_URL }}
+        run: |
+          npm run build
+          echo "✅ Build succeeded" >> $GITHUB_STEP_SUMMARY
+      - name: Final Summary
+        if: always()
+        run: |
+          echo "## 🧾 Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Node.js v${{ matrix.node }}" >> $GITHUB_STEP_SUMMARY
+          echo "🕒 Completed at $(date)" >> $GITHUB_STEP_SUMMARY
+          # Checks the overall job status to add a success/failure icon at the top
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "Status: 🟢 Success" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Status: 🔴 Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Build Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          if [ -d dist ]; then ls -lh dist/ | tail -n +2 >> $GITHUB_STEP_SUMMARY; else echo "No dist/ folder found (Build failed or created empty dist)" >> $GITHUB_STEP_SUMMARY; fi
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
