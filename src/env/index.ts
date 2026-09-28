@@ -34,6 +34,11 @@ const envSchema = z.object({
 
   // Cron
   CRON_SCHEDULE: z.string().default('0 23 * * *'),
+
+  //Redis
+  REDIS_HOST: z.string().default('localhost'),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string().optional(),
 })
 
 const _env = envSchema.safeParse(process.env)
