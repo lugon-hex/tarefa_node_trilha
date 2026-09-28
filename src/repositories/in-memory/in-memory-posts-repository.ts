@@ -66,9 +66,7 @@ const MOCK_POSTS: MockPost[] = [
     title: 'Zod v4: validação de variáveis de ambiente',
     content:
       'Como usar z.preprocess, z.coerce e z.enum para garantir tipagem segura no startup da aplicação.',
-    likes: [
-      { likedAt: hoursAgo(72) }, 
-    ],
+    likes: [{ likedAt: hoursAgo(72) }],
   },
 ]
 
