@@ -42,9 +42,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Type Checking
-        run: npx tsc --noEmit
-      
       # Execução do Linter para organizar o código:
       - name: Run Linter
         run: |
@@ -58,6 +55,9 @@ jobs:
         run: |
           npx prisma generate
           echo "✅ Prisma Client generated" >> $GITHUB_STEP_SUMMARY
+
+      - name: Type Checking
+        run: npx tsc --noEmit
           
       - name: Build
         env:
