@@ -1,7 +1,7 @@
 import type { User } from '@/@types/prisma/client.js'
+import { redis } from '@/libs/redis.js'
 import type { UsersRepository } from '@/repositories/users-repository.js'
 import { ResourceNotFoundError } from '../errors/resource-not-found-error.js'
-import { redis } from '@/libs/redis.js'
 
 interface GetUserUseCaseRequest {
   publicId: string
@@ -21,10 +21,10 @@ export class GetUserUseCase {
 
     const cachedUser = await redis.get(cacheKey)
 
-    if(cachedUser){
-      return { 
-        user: JSON.parse(cachedUser)
-       }
+    if (cachedUser) {
+      return {
+        user: JSON.parse(cachedUser),
+      }
     }
 
     const user = await this.usersRepository.findBy({ publicId })
