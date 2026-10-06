@@ -3,3 +3,5 @@ build
 .env
 /src/@types/prisma
 backend-template-trilha-main
+coverage/
+dist/
