@@ -1,5 +1,6 @@
 import { compare } from 'bcryptjs'
 import { describe, expect, it, vi } from 'vitest'
+import type { UsersRepository } from '@/repositories/users-repository.js'
 import { AuthenticateUserUseCase } from './authenticate.js'
 
 vi.mock('bcryptjs', () => ({
@@ -19,7 +20,7 @@ describe('AuthenticateUser Use Case', () => {
     vi.mocked(compare).mockResolvedValue(true as never)
 
     const authenticateUser = new AuthenticateUserUseCase(
-      usersRepositoryMock as any,
+      usersRepositoryMock as unknown as UsersRepository,
     )
 
     const response = await authenticateUser.execute({
